@@ -17,6 +17,10 @@ class UserRepositoryInMemory implements IUserRepository {
 
         return user;
     }
+
+    async getById(id: number): Promise<User | null> {
+        return this.users.find(user => user.id == id) || null;
+    }
 }
 
 export default UserRepositoryInMemory;

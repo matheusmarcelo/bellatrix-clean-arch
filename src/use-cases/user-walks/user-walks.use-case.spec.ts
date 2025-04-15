@@ -1,6 +1,7 @@
 import User from "../../entities/user.model";
 import { UserWalks } from "./user-walks.use-case";
 import UserRepositoryInMemory from "../../infra/in-memory/user-repository-in-memory";
+import MonsterRepositoryInMemory from "../../infra/in-memory/monster-repository-in-memory";
 
 describe("UserWalks", () => {
 
@@ -17,11 +18,15 @@ describe("UserWalks", () => {
             atkMax: 5
         });
 
-        const userWalks = new UserWalks(new UserRepositoryInMemory());
+        const userRepositoryInMemory = new UserRepositoryInMemory();
+        const monsterRepositoryInMemory = new MonsterRepositoryInMemory();
+        
+        const userWalks = new UserWalks(userRepositoryInMemory, monsterRepositoryInMemory);
 
-        const persistedUser = await userWalks.execute(user, 1, 1);
+        await userWalks.execute(user, 1, 1);
+        const updatedUser = await userRepositoryInMemory.getById(user.id);
 
-        expect(persistedUser.posX).toBe(1);
-        expect(persistedUser.posY).toBe(1);
+        expect(updatedUser?.posX).toBe(1);
+        expect(updatedUser?.posY).toBe(1);
     });
 });
